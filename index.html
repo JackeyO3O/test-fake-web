@@ -2,19 +2,124 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <title>我的測試網站</title>
-  <!-- Weglot JS 將在這裡插入 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>假 API 文件範例</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 1rem;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1, h2 {
+      color: #0052cc;
+    }
+    pre {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 0.5rem;
+      text-align: left;
+    }
+    th {
+      background-color: #e6f0ff;
+    }
+  </style>
 </head>
 <body>
-  <h1>歡迎來到我的測試網站</h1>
-  <p>這是用 GitHub Pages 做的靜態網站。</p>
+  <h1>假 API 文件範例</h1>
 
-  <!-- Weglot JS snippet -->
+  <h2>1. 取得用戶資訊 API</h2>
+  <p><strong>說明</strong><br />此 API 用來取得指定用戶的詳細資訊。</p>
+
+  <h3>請求</h3>
+  <pre>GET /api/v1/users/{userId}</pre>
+
+  <h3>路徑參數</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>參數名稱</th>
+        <th>類型</th>
+        <th>必填</th>
+        <th>說明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>userId</td>
+        <td>string</td>
+        <td>是</td>
+        <td>用戶唯一識別碼</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>成功回應</h3>
+  <pre>{
+  "userId": "12345",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "createdAt": "2025-07-14T12:34:56Z"
+}</pre>
+
+  <h3>錯誤回應</h3>
+  <pre>{
+  "error": "User not found"
+}</pre>
+
+  <hr />
+
+  <h2>2. 建立訂單 API</h2>
+  <p><strong>說明</strong><br />此 API 用來為用戶建立一筆新的訂單。</p>
+
+  <h3>請求</h3>
+  <pre>POST /api/v1/orders
+Content-Type: application/json</pre>
+
+  <h3>請求體（JSON）</h3>
+  <pre>{
+  "userId": "12345",
+  "items": [
+    { "productId": "abc123", "quantity": 2 },
+    { "productId": "def456", "quantity": 1 }
+  ],
+  "note": "請盡快出貨"
+}</pre>
+
+  <h3>成功回應</h3>
+  <pre>{
+  "orderId": "order7890",
+  "status": "pending",
+  "createdAt": "2025-07-14T13:00:00Z"
+}</pre>
+
+  <h3>錯誤回應</h3>
+  <pre>{
+  "error": "Invalid product ID"
+}</pre>
+
+  <!-- Weglot JS snippet 放在 body 底部 -->
   <script type="text/javascript" src="https://cdn.weglot.com/weglot.min.js"></script>
   <script>
-      Weglot.initialize({
-        api_key: 'wg_d147478949316fc00ac9d4d832bfb3cb7'
+    Weglot.initialize({
+      api_key: 'wg_d147478949316fc00ac9d4d832bfb3cb7'
     });
-</script>
+  </script>
+
 </body>
 </html>
