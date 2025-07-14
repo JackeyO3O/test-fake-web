@@ -7,113 +7,262 @@
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
       padding: 1rem;
-      background: #f9f9f9;
-      color: #333;
+      background: #fafafa;
+      color: #222;
     }
-    h1, h2 {
-      color: #0052cc;
+    h1, h2, h3 {
+      color: #1a73e8;
     }
     pre {
       background: #272822;
       color: #f8f8f2;
       padding: 1rem;
-      border-radius: 4px;
+      border-radius: 6px;
       overflow-x: auto;
+      font-size: 0.9rem;
     }
     table {
       border-collapse: collapse;
       width: 100%;
       margin-bottom: 1rem;
     }
-    table, th, td {
-      border: 1px solid #ddd;
-    }
     th, td {
+      border: 1px solid #ccc;
       padding: 0.5rem;
       text-align: left;
     }
     th {
-      background-color: #e6f0ff;
+      background-color: #e8f0fe;
+    }
+    hr {
+      margin: 2rem 0;
+      border: none;
+      border-top: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
   <h1>假 API 文件範例</h1>
 
-  <h2>1. 取得用戶資訊 API</h2>
-  <p><strong>說明</strong><br />此 API 用來取得指定用戶的詳細資訊。</p>
-
+  <h2>1. 商品即時庫存查詢</h2>
+  <p><strong>說明：</strong>查詢指定商品頁（含 SKU）目前的即時庫存。</p>
   <h3>請求</h3>
-  <pre>GET /api/v1/users/{userId}</pre>
+  <pre>POST /ec/V1/SalePage/GetStock
+Content-Type: application/json
+Authorization: ApiKeyAuth</pre>
 
-  <h3>路徑參數</h3>
+  <h3>請求參數</h3>
   <table>
     <thead>
-      <tr>
-        <th>參數名稱</th>
-        <th>類型</th>
-        <th>必填</th>
-        <th>說明</th>
-      </tr>
+      <tr><th>參數名稱</th><th>類型</th><th>必填</th><th>說明</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td>userId</td>
-        <td>string</td>
-        <td>是</td>
-        <td>用戶唯一識別碼</td>
-      </tr>
+      <tr><td>Id</td><td>integer</td><td>是</td><td>商品頁編號</td></tr>
+      <tr><td>SkuId</td><td>integer</td><td>否</td><td>商品選項編號（SKU），不填則查詢所有SKU</td></tr>
     </tbody>
   </table>
 
-  <h3>成功回應</h3>
+  <h3>範例請求</h3>
   <pre>{
-  "userId": "12345",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "createdAt": "2025-07-14T12:34:56Z"
+  "Id": 21248,
+  "SkuId": 22591
 }</pre>
 
-  <h3>錯誤回應</h3>
+  <h3>成功回應</h3>
   <pre>{
-  "error": "User not found"
+  "Status": "Success",
+  "Data": [
+    {
+      "SkuId": 22591,
+      "StockQty": 50
+    }
+  ],
+  "ErrorMessage": null,
+  "TimeStamp": "2025-07-14T14:49:06.5239036+08:00"
 }</pre>
 
   <hr />
 
-  <h2>2. 建立訂單 API</h2>
-  <p><strong>說明</strong><br />此 API 用來為用戶建立一筆新的訂單。</p>
-
+  <h2>2. 商品可售數量變更</h2>
+  <p><strong>說明：</strong>即時變更商品選項（SKU）的可售數量。※組合商品不可變更可售數量。</p>
   <h3>請求</h3>
-  <pre>POST /api/v1/orders
-Content-Type: application/json</pre>
+  <pre>POST /ec/V2/SalePage/UpdateSellingQty
+Content-Type: application/json
+Authorization: ApiKeyAuth</pre>
 
-  <h3>請求體（JSON）</h3>
+  <h3>請求參數</h3>
+  <table>
+    <thead>
+      <tr><th>參數名稱</th><th>類型</th><th>必填</th><th>說明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Id</td><td>integer</td><td>是</td><td>商品頁編號</td></tr>
+      <tr><td>SkuId</td><td>integer</td><td>是</td><td>商品選項編號（SKU）</td></tr>
+      <tr><td>OuterId</td><td>string</td><td>否</td><td>商店料號，空值填null</td></tr>
+      <tr><td>SellingQty</td><td>integer</td><td>是</td><td>異動後可售數量</td></tr>
+    </tbody>
+  </table>
+
+  <h3>範例請求</h3>
   <pre>{
-  "userId": "12345",
-  "items": [
-    { "productId": "abc123", "quantity": 2 },
-    { "productId": "def456", "quantity": 1 }
-  ],
-  "note": "請盡快出貨"
+  "Id": 21248,
+  "SkuId": 22591,
+  "OuterId": "ABC8343",
+  "SellingQty": 100
 }</pre>
 
   <h3>成功回應</h3>
   <pre>{
-  "orderId": "order7890",
-  "status": "pending",
-  "createdAt": "2025-07-14T13:00:00Z"
+  "Status": "Success",
+  "Data": "Success",
+  "ErrorMessage": null
 }</pre>
 
-  <h3>錯誤回應</h3>
+  <hr />
+
+  <h2>3. 商品即時庫存變更</h2>
+  <p><strong>說明：</strong>即時變更商品選項（SKU）庫存，更新後總庫存不得低於已售數量。※組合商品不可變更庫存。</p>
+  <h3>請求</h3>
+  <pre>POST /ec/V2/SalePage/UpdateStock
+Content-Type: application/json
+Authorization: ApiKeyAuth</pre>
+
+  <h3>請求參數</h3>
+  <table>
+    <thead>
+      <tr><th>參數名稱</th><th>類型</th><th>必填</th><th>說明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Id</td><td>integer</td><td>是</td><td>商品頁編號</td></tr>
+      <tr><td>SkuId</td><td>integer</td><td>是</td><td>商品選項編號（SKU）</td></tr>
+      <tr><td>OuterId</td><td>string</td><td>否</td><td>商店料號，空值填null</td></tr>
+      <tr><td>ChangeValue</td><td>string</td><td>是</td><td>異動量，正負數字</td></tr>
+    </tbody>
+  </table>
+
+  <h3>範例請求</h3>
   <pre>{
-  "error": "Invalid product ID"
+  "Id": 21248,
+  "SkuId": 22591,
+  "OuterId": "ABC8343",
+  "ChangeValue": "-1"
 }</pre>
 
-  <!-- Weglot JS snippet 放在 body 底部 -->
+  <h3>成功回應</h3>
+  <pre>{
+  "Status": "Success",
+  "Data": "Success",
+  "ErrorMessage": null
+}</pre>
+
+  <hr />
+
+  <h2>4. 商品頁銷售狀態變更</h2>
+  <p><strong>說明：</strong>變更商品頁銷售狀態（開啟或關閉）。</p>
+  <h3>請求</h3>
+  <pre>POST /ec/V1/SalePage/UpdateListing
+Content-Type: application/json
+Authorization: ApiKeyAuth</pre>
+
+  <h3>請求參數</h3>
+  <table>
+    <thead>
+      <tr><th>參數名稱</th><th>類型</th><th>必填</th><th>說明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Id</td><td>integer</td><td>是</td><td>商品頁序號</td></tr>
+      <tr><td>IsClosed</td><td>boolean</td><td>是</td><td>是否關閉銷售</td></tr>
+    </tbody>
+  </table>
+
+  <h3>範例請求</h3>
+  <pre>{
+  "Id": 21248,
+  "IsClosed": true
+}</pre>
+
+  <h3>成功回應</h3>
+  <pre>{
+  "Status": "Success",
+  "Data": "Success",
+  "ErrorMessage": null,
+  "TimeStamp": "2025-07-14T14:49:06.5239036+08:00"
+}</pre>
+
+  <hr />
+
+  <h2>5. 商品頁資料變更</h2>
+  <p><strong>說明：</strong>變更商品頁資料，包含銷售期間、付款方式、物流方式、商品規格等，會完全取代原有設定。</p>
+  <h3>請求</h3>
+  <pre>POST /ec/V1/SalePage/UpdateDetail
+Content-Type: application/json
+Authorization: ApiKeyAuth</pre>
+
+  <h3>請求體範例</h3>
+  <pre>{
+  "Id": 21248,
+  "ShopId": 1001,
+  "CategoryId": 5,
+  "ShopCategoryId": 10,
+  "SellingStartDateTime": "2025-07-15T00:00:00Z",
+  "SellingEndDateTime": "2025-12-31T23:59:59Z",
+  "ShippingTypes": [1, 2],
+  "PayTypes": ["CreditCardOnce", "Family"],
+  "Brand": "BrandX",
+  "Type": "ModelY",
+  "Specifications": {
+    "Color": "Red",
+    "Size": "L"
+  },
+  "ProductHighlight": "熱銷商品，限時優惠",
+  "ProductDescription": "此商品具有高品質與良好口碑。",
+  "MoreInfo": "更多產品細節資訊與注意事項。",
+  "SEOTitle": null,
+  "SEOKeywords": null,
+  "SEODescription": null,
+  "TemperatureTypeDef": "Normal",
+  "Length": 30,
+  "Width": 20,
+  "Height": 10,
+  "Weight": 500,
+  "Status": "Normal",
+  "IsShowStockQty": true,
+  "TaxTypeDef": "Taxable",
+  "IsReturnable": true
+}</pre>
+
+  <h3>成功回應</h3>
+  <pre>{
+  "Status": "Success",
+  "Data": "Success",
+  "ErrorMessage": null
+}</pre>
+
+  <hr />
+
+  <h2>6. 翻譯 API（假範例）</h2>
+  <p><strong>說明：</strong>此為模擬翻譯 API，示範如何提交文字並取得翻譯結果。</p>
+  <h3>請求</h3>
+  <pre>POST /api/v1/translate
+Content-Type: application/json
+Authorization: ApiKeyAuth</pre>
+
+  <h3>請求體</h3>
+  <pre>{
+  "source_lang": "zh",
+  "target_lang": "en",
+  "text": "請輸入要翻譯的內容"
+}</pre>
+
+  <h3>成功回應</h3>
+  <pre>{
+  "translated_text": "Please enter the content to translate"
+}</pre>
+
+  <!-- Weglot 多語系初始化腳本，方便你直接測試多語系切換 -->
   <script type="text/javascript" src="https://cdn.weglot.com/weglot.min.js"></script>
   <script>
     Weglot.initialize({
